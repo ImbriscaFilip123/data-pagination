@@ -1,3 +1,5 @@
+ const paginationButtons = document.querySelectorAll(".pButton");
+
 //todo functtie ce primeste ca parametru o persoana si returneaza un card
 
 function createCard(person)
@@ -29,11 +31,15 @@ function createCard(person)
 
 
 
-function attachCardsPersons(persons){
-
-
+function attachCardsPersons(persons , personsLength, start){
     let container=document.querySelector(".student-list");
-    for(let i=0;i<persons.length;i++){
+  
+    while (container.firstChild) {
+        container.removeChild(container.firstChild);
+    }
+ 
+  
+    for(let i=start;i<personsLength;i++){
 
 
         container.appendChild(createCard(persons[i]));
@@ -42,4 +48,23 @@ function attachCardsPersons(persons){
 
 
 //todo:paginatie
+
+
+
+console.log(data.length);
+
+paginationButtons.forEach((paginationButton) => {
+         
+    paginationButton.addEventListener("click", () => {
+    
+        paginationButtons.forEach((paginationButton) => paginationButton.classList.remove("active") )
+
+        paginationButton.classList.add("active");
+
+        let index = Number(paginationButton.textContent);
+        let dataLength = data.length;                              
+
+        attachCardsPersons(data, index * 9 , (index - 1) * 9);
+    })
+})
 
