@@ -23,6 +23,9 @@ container.addEventListener("click", (event) => {
 
 })
 
+
+let pozitie=-1;
+
 studentsList.addEventListener("click", (event) => {
 
     let object = event.target;
@@ -34,14 +37,12 @@ studentsList.addEventListener("click", (event) => {
             let objectParent = object.parentElement;
             let inputs = objectParent.querySelectorAll('.editable-input');
             inputs.forEach(input => {
-                saveEdit(input);
+                saveEdit(input, pozitie);
             });
-    
              object.innerText = "Edit";
             
         }
         else{
-
         object.style.backgroundColor = "blueviolet";
         object.innerText = "Save";
 
@@ -50,6 +51,12 @@ studentsList.addEventListener("click", (event) => {
          let name = objectParent.querySelector("h3");
          let email = objectParent.querySelector(".email");
          let date = objectParent.querySelector(".date");
+
+         let names = name.textContent.split(" ");
+
+         let i = cardPosition(names[0], names[1]);
+
+         pozitie=i;
         
         transformToInput(name);
         transformToInput(email);
@@ -57,6 +64,8 @@ studentsList.addEventListener("click", (event) => {
         }
 
     }
+
+  
 
 
 })

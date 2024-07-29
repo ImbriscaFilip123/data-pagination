@@ -143,6 +143,17 @@ header div{display: flex;
          margin-inline: auto;
          font-weight: 600;
          border: 1px solid #ccc;}
+  
+         .deleteBtn{width: fit-content;
+          padding: .5em 2em;
+          background-color: red;
+          color: white;
+          margin-top: .5em;
+          margin-inline: auto;
+          font-weight: 600;
+          border: 1px solid #ccc;}
+
+      
 
 .change{ background-color: green;}
 

@@ -1,94 +1,69 @@
 
 //todo functtie ce primeste ca parametru o persoana si returneaza un card
 
-function createCard(person)
-{
-    let item=document.createElement("li");
-
-    
-    item.classList.add("student-item");
-    item.classList.add("cf");
-
-    item.innerHTML=`
-        <div class="student-details">
-        <img class="avatar" src="${person.picture.large}" alt="Profile Picture">
-        <h3  class="name editableInput">${person.name.first} ${person.name.last}</h3>
-        <span class="email editableInput" >${person.email}</span>
-        </div>
-        <div class="joined-details">
-        <span class="date editableInput" >Joined ${person.registered.date}</span>
-        </div>
-        <button class="editBtn">Edit</button>
-    `
 
 
-    return item;
+let currentPage = 1;
+const perPagina = 9;
 
+function pagination(array, pagina, perPagina) {
+  let start = perPagina * (pagina - 1);
+  let finish = start + perPagina;
+  return array.slice(start, finish);
 }
 
+function createCard(person, index) {
+  let item = document.createElement("li");
+  item.classList.add("student-item", "cf");
+  item.setAttribute("data-id", index); 
 
-//todo functie ce primeste ca parametru un vector de persoane si populeaza cardurile
+  item.innerHTML = `
+    <div class="student-details">
+      <img class="avatar" src="${person.picture.large}" alt="Profile Picture">
+      <h3 class="name editableInput">${person.name.first} ${person.name.last}</h3>
+      <span class="email editableInput">${person.email}</span>
+    </div>
+    <div class="joined-details">
+      <span class="date editableInput">Joined ${person.registered.date}</span>
+    </div>
+    <button class="editBtn">Edit</button>
+    <button class="deleteBtn">Delete</button>
+  `;
 
+  
+  item.querySelector('.deleteBtn').addEventListener('click', function() {
+    deleteUser(index);
+  });
 
-
-function attachCardsPersons(persons){
-    let container=document.querySelector(".student-list");
-
-    container.innerHTML="";
-    for(let i=0;i<persons.length;i++){
-        container.appendChild(createCard(persons[i]));
-    }
+  return item;
 }
 
+function attachCardsPersons(persons) {
+  let container = document.querySelector(".student-list");
+  container.innerHTML = "";
+  persons.forEach((person, index) => {
+    container.appendChild(createCard(person, index));
+  });
+}
 
+function createPage(page) {
+  currentPage = page;
+  let persons = pagination(data, page, perPagina);
+  attachCardsPersons(persons);
+ 
+}
 
+function deleteUser(index) {
+  let actualIndex = (currentPage - 1) * perPagina + index;
+  data.splice(actualIndex, 1);
 
-
-
-
-//todo:paginatie
-
-
-//todo functie ce primeste :  array nr paginii si n pe pagina si returneaza pagina
-
-
-//[23,43,32,3,34,21,32,43,54,567,213,43,12,32]
-
-
-
-
-
-function  pagination(array,pagina,perPagina){
-
-    let i;
-    let start = perPagina * (pagina - 1) ;
-    let finish = (perPagina * pagina) - 1;
-
-    let aux=[];
-    
-    if(start == -1){
-        start = 1;
-    }
-
-    console.log(start , finish);
-
-    for(i= start ; i<array.length && i <= finish; i++){
-       aux.push(array[i]);
-    }
-
-    return aux;
-
+  createPage(currentPage); 
 }
 
 
 
 
-
-function createPage(nr){
-    let perPagina=9;
-    let persons=pagination(data,nr,perPagina);
-    attachCardsPersons(persons);
-}
+createPage(currentPage);
 
 
 function getPersonFromForm(){
@@ -137,44 +112,75 @@ function transformToInput(element){
 }
 
 
-function saveEdit(input) {
+function saveEdit(input,index) {
     const value = input.value;
     const originalTag = input.getAttribute('data-original-tag');
     const originalClasses = input.getAttribute('data-original-classes');
     const newElement = document.createElement(originalTag);
     newElement.textContent = value;
     newElement.setAttribute('data-original-tag', originalTag);
+    
 
-   
     if (originalClasses) {
         newElement.className = originalClasses;
     }
 
+    
+    originalClasses.split(" ");
+    
+    if(originalTag == "h3"){
+
+      let array = newElement.textContent.split(" ");
+
+        data[index].name.first=array[0];
+        data[index].name.last=array[1];
+    }
+    else if(originalClasses[0] == "email"){
+
+        data[index].email = array.textContent;
+    }
+    else if(originalClasses[0] == "date"){
+
+        data[index].registered.date == array.textContent;
+    }
+
+
+    
+
+    
+   
     input.replaceWith(newElement);
+
+    return(newElement.textContent);
+  
+
+ 
 }
 
 
-// paginationButtons.forEach((paginationButton) => {
-         
-//     paginationButton.addEventListener("click", () => {
-    
-//         paginationButtons.forEach((paginationButton) => paginationButton.classList.remove("active") )
 
-//         paginationButton.classList.add("active");
 
-//         let index = Number(paginationButton.textContent);
-//         let dataLength = data.length;                              
+//functie ce primeste ca paramteru  numele unei persoane si returneaza 
+//pozitia din vector unde  se afla persoana
 
-//         attachCardsPersons(data, index * 9 , (index - 1) * 9);
-//     })
-// })
+function cardPosition(first ,last){
 
-// pagination.addEventListener("click" , (event) => {
+   
+    let i ;
 
-//    let object = event.target;
+    for(i=0 ; i< data.length; i++)
+    {
+        
+        if(data[i].name.first == first && data[i].name.last==last)
+        return i;
+    }
+    return -1;
+}
 
-//    if(object.classList.contains("pButton")){
-//     console.log("test");
-//    }
 
-// })
+function deleteUser(index) {
+    let actualIndex = (currentPage - 1) * perPagina + index;
+    data.splice(actualIndex, 1); 
+ 
+    createPage(currentPage);
+  }
